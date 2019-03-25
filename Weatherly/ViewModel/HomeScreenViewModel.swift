@@ -29,7 +29,7 @@ class HomeScreenViewModel  {
     var weatherDescriptionIcon = BehaviorRelay<UIImage?>(value: nil)
     var temperature = BehaviorRelay<String?>(value: nil)
     
-    var isFetchingWeatherData = BehaviorRelay<Bool>(value: false)
+    var isFetchingWeatherData = BehaviorRelay<Bool>(value: true)
     
     let disposeBag = DisposeBag()
     
@@ -46,16 +46,16 @@ class HomeScreenViewModel  {
     
     func fetchWeatherData(city: String, countryCode: String) {
         
-        isFetchingWeatherData.accept(true)
         weatherAPIManager.fetchCurrentWeatherData(city: city, countryIsoCode: countryCode) { [unowned self](data) in
             guard let weatherData = data else { return }
-            
+            print(weatherData.main)
             self.weatherBackgroundImage.accept(UIImage(named: "\(weatherData.main.lowercased())Background"))
             self.weatherDescription.accept(weatherData.description)
             self.temperature.accept("\(String(weatherData.temp))\u{00b0}C")
             
             ImageDownloadManager.requestImageDownload(with: weatherData.iconUrl, completion: { (image) in
                 self.weatherDescriptionIcon.accept(image)
+                self.isFetchingWeatherData.accept(false)
             })
         }
     }
@@ -69,9 +69,6 @@ class HomeScreenViewModel  {
         let date = Date()
         let dateAsString = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
         let timeAsString = DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: DateFormatter.Style.medium)
-        
-        print(dateAsString)
-        print(timeAsString)
         
         if self.dateString.value != dateAsString {
             self.dateString.accept(dateAsString)
@@ -87,7 +84,6 @@ class HomeScreenViewModel  {
 extension HomeScreenViewModel: UserLocationManagerProtocol {
     
     func updateLocation(city: String, countryIsoCode: String) {
-        print(city)
         locationString.accept("\(city), \(countryIsoCode)")
         fetchWeatherData(city: city, countryCode: countryIsoCode)
     }

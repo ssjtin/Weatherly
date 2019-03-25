@@ -12,8 +12,7 @@ class DateAndTimeView: UIView {
     
     let dateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.blue
-        label.text = "today"
+        label.textColor = UIColor.white
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 24)
         return label
@@ -21,8 +20,7 @@ class DateAndTimeView: UIView {
     
     let timelabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.blue
-        label.text = "2pm"
+        label.textColor = UIColor.white
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 28)
         return label
@@ -30,11 +28,6 @@ class DateAndTimeView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        layer.cornerRadius = 25
-        layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 5
-        layer.masksToBounds = true
         
         setupSubviews()
     }

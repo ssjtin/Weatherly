@@ -13,9 +13,10 @@ class WeatherAPIManager {
     
     let API_KEY = "b41b82226c7f41fca9f216684bda70cd"
     let BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q="
+    let TRIGGER_URL = "http://api.openweathermap.org/data/3.0/triggers"
     let ICON_BASE_URL = "http://openweathermap.org/img/w/"
     
-    func fetchCurrentWeatherData(city: String, countryIsoCode: String, completion: @escaping (WeatherData?) -> ()) {
+    func fetchCurrentWeatherData(city: String, countryIsoCode: String, completion: @escaping (WeatherData?) ->()) {
         
         let url = BASE_URL + city + "," + countryIsoCode + "&appid=" + API_KEY + "&units=Metric"
         
@@ -33,5 +34,29 @@ class WeatherAPIManager {
             completion(weatherData)
         }
         request.resume()
+    }
+    
+    func createTrigger(using jsonData: Data) {
+        
+        let url = TRIGGER_URL + "?appid=" + API_KEY
+        
+        var request = URLRequest(url: URL(string: url)!)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.httpBody = jsonData
+
+        
+        AF.request(request).responseJSON { (response) in
+            switch response.result {
+            case .success(let value):
+                print(value)
+                let value = JSON(value)
+                print(value)
+            case .failure(let error):
+                print("Alamofire response return\(error.localizedDescription)")
+            }
+        }
+    
+        
+        
     }
 }
